@@ -1,0 +1,47 @@
+- [Home](/)
+- [Course Outline](curriculum/course-outline.md)
+- [Course Brief](brief/course-brief.md)
+- [Glossary](assets/glossary.md)
+
+- **Module 1 — Inside the residual stream**
+  - [Module plan](curriculum/module-01-plan.md)
+  - [01 · Tokens, embeddings, and the residual stream](lessons/module-01/lesson-01.md)
+  - [02 · Reading hidden states across layers](lessons/module-01/lesson-02.md)
+  - [03 · Behavior lives in a direction, not a neuron](lessons/module-01/lesson-03.md)
+  - [Module 1 quiz](assessments/module-01-quiz.md)
+- **Module 2 — Finding the refusal direction**
+  - [Module plan](curriculum/module-02-plan.md)
+  - [04 · Harmful vs. harmless prompt sets](lessons/module-02/lesson-01.md)
+  - [05 · Computing the direction](lessons/module-02/lesson-02.md)
+  - [06 · Sanity-checking a direction](lessons/module-02/lesson-03.md)
+  - [Module 2 quiz](assessments/module-02-quiz.md)
+- **Module 3 — The ablation trick**
+  - [Module plan](curriculum/module-03-plan.md)
+  - [07 · Orthogonal projection](lessons/module-03/lesson-01.md)
+  - [08 · From vectors to weight matrices](lessons/module-03/lesson-02.md)
+  - [09 · Why a rank-1 LoRA instead of a weight edit](lessons/module-03/lesson-03.md)
+  - [Module 3 quiz](assessments/module-03-quiz.md)
+- **Module 4 — Building the pipeline**
+  - [Module plan](curriculum/module-04-plan.md)
+  - [10 · Hooking every layer at once](lessons/module-04/lesson-01.md)
+  - [11 · Making the edit permanent](lessons/module-04/lesson-02.md)
+  - [12 · Choosing which layers and how strongly](lessons/module-04/lesson-03.md)
+  - [Module 4 quiz](assessments/module-04-quiz.md)
+- **Module 5 — Making it automatic**
+  - [Module plan](curriculum/module-05-plan.md)
+  - [13 · Scoring a model](lessons/module-05/lesson-01.md)
+  - [14 · Search instead of guesswork](lessons/module-05/lesson-02.md)
+  - [15 · Reading Heretic's real optimizer](lessons/module-05/lesson-03.md)
+  - [Module 5 quiz](assessments/module-05-quiz.md)
+- **Module 6 — Running the real thing**
+  - [Module plan](curriculum/module-06-plan.md)
+  - [16 · Installing and configuring Heretic](lessons/module-06/lesson-01.md)
+  - [17 · Reading model.py::abliterate() for real](lessons/module-06/lesson-02.md)
+  - [18 · Making a real, scoped change](lessons/module-06/lesson-03.md)
+  - [Module 6 quiz](assessments/module-06-quiz.md)
+- **Module 7 — Capstone and responsible use**
+  - [Module plan](curriculum/module-07-plan.md)
+  - [19 · Evaluating a decensored model properly](lessons/module-07/lesson-01.md)
+  - [20 · Capstone: mini-heretic.py](lessons/module-07/lesson-02.md)
+  - [Module 7 quiz](assessments/module-07-quiz.md)
+- [Glossary](assets/glossary.md)

@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+lab/.venv/
+lab/.cache/
+lab/.progress
+__pycache__/
+*.pyc
+lab/vendor/heretic/
+lab/models/
