@@ -1,0 +1,59 @@
+# Multiple-choice version of the quiz in module-03-quiz.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: bb4e1f547e1e
+  question: A colleague says "ablation zeroes out the neuron that represents refusal." Which statement best corrects them?
+  options:
+    - Ablation zeroes a small cluster of neurons rather than one, since refusal is spread over a few coordinates.
+    - Ablation removes a direction spanning many residual dimensions at once, not a value in a single neuron.
+    - Ablation zeroes the refusal neuron's incoming weights rather than its activation, which is safer to edit.
+    - Ablation retrains the neuron to output zero on harmful prompts, leaving its behavior elsewhere unchanged.
+  correct: 1
+- source: 13a138b818f1
+  question: Given a unit vector `d` (`d . d = 1`) and any vector `v`, which derivation shows that `v' = v - (v . d) d` satisfies `v' . d = 0`?
+  options:
+    - "`v' . d = v . d - (v . d) = 0`, because `v . d` is always zero for any vector `v` and any unit `d`."
+    - "`v' . d = (v - d) . d - (v . d) = v . d - 1 - v . d`, which cancels to zero since `d` is unit."
+    - "`v' . d = v . v - (v . d)(v . d)`, which is zero by the Cauchy-Schwarz inequality for a unit `d`."
+    - "`v' . d = v . d - (v . d)(d . d) = v . d - (v . d)(1) = 0`, by distributing and using `d . d = 1`."
+  correct: 3
+- source: 3688f278052f
+  question: "`ablate_vector`, `ablate_matrix_output`, and `ablate_matrix_input` normalize `direction` internally. Why does that matter for the orthogonality proof `v' . d = 0`?"
+  options:
+    - Normalization makes the ablation faster on GPU, which the proof assumes when it bounds numeric error.
+    - Normalization flips `d` to point toward the harmful mean, which the proof needs to get the sign right.
+    - The proof relies on `d . d = 1`; otherwise the terms do not cancel and a component along `d` remains.
+    - The proof only holds for integer vectors, and normalization rounds `d` to the nearest integer vector.
+  correct: 2
+- source: aa6d2146f6d7
+  question: A Qwen3 decoder layer has `q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, and `down_proj`. `merge_into_model` ablates only two per layer. Which two, and why?
+  options:
+    - "`o_proj` and `down_proj`, because only their outputs are added directly into the residual stream."
+    - "`q_proj` and `k_proj`, because refusal is decided by which tokens attention chooses to focus on."
+    - "`v_proj` and `up_proj`, because they hold the value content that attention and the MLP pass along."
+    - "`gate_proj` and `up_proj`, because the MLP gate is where the model switches refusal on or off."
+  correct: 0
+- source: 1c9c356da78d
+  question: "`embed_tokens.weight` is ablated with `ablate_matrix_input`, not `ablate_matrix_output`. What is different about its rows compared to `o_proj.weight`'s outputs?"
+  options:
+    - Its rows are transposed on disk, so `ablate_matrix_input` is just the same operation with swapped axes.
+    - Its rows are gradients saved from training, so they must be projected on the input side to stay stable.
+    - Its rows are far smaller than `o_proj` outputs, so an output-side projection would underflow to zero.
+    - Each row already is the residual vector for its token, not the output of a `y = W @ x` computation.
+  correct: 3
+- source: 3ca7e316cd8a
+  question: 'True or false: "A rank-1 LoRA here is an approximation of the true weight edit, the same way a LoRA is an approximation for fine-tuning."'
+  options:
+    - False; the edit `-d (d^T W)` is an outer product, exactly rank 1 already, so `B @ A` matches it.
+    - True; rank 1 captures most of the edit, but a higher rank would be needed to reproduce it exactly.
+    - True; every LoRA approximates its target, and rank 1 is chosen here only to keep the adapter small.
+    - False; the LoRA is exact only because the edit targets the embedding matrix, not the projections.
+  correct: 0
+- source: 0c81023e50a1
+  question: You plan to try 200 `(layer, weight)` combinations to tune ablation strength. Why attach and detach a rank-1 LoRA per trial instead of calling `merge_into_model` and reloading each time?
+  options:
+    - A merged model cannot generate until it is quantized again, which makes every trial much slower.
+    - The LoRA leaves base weights untouched, so the model loads once instead of once per merged trial.
+    - Merging only supports one layer per call, so testing layer combinations needs a LoRA to stack them.
+    - A LoRA applies a stronger ablation than a merge, so trials show clearer differences between settings.
+  correct: 1

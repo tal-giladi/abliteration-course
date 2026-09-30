@@ -1,0 +1,59 @@
+# Multiple-choice version of the quiz in module-07-quiz.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 8d3b11f0f0f2
+  question: A colleague says "I don't need `capability_spot_check` - `refusal_rate` going down and `coherence_score` staying reasonable already tells me the ablation worked." What failure mode does this miss?
+  options:
+    - The refusal direction can grow back after a few hundred generated tokens, which only a capability check can detect
+    - "`coherence_score` is computed on harmful prompts only, so it says nothing about how the model handles the harmless ones"
+    - Coherence checks single-step logits, so generation can degrade over many tokens; the spot check tests real answers
+    - "`refusal_rate` counts partial refusals as compliance, so a spot check is needed to catch hedged refusals"
+  correct: 2
+- source: d7687cd7d403
+  question: A colleague says "`capability_spot_check` is basically a small benchmark, so a model that passes it is a good model." What is the check actually for?
+  options:
+    - A five-question smoke test that the ablation did not break the model; passing shows only it is not obviously broken
+    - It is a calibrated mini-benchmark whose score tracks MMLU closely, so passing it does indicate general model quality
+    - It measures whether the ablation improved reasoning, since removing refusals frees capacity for other tasks
+    - It checks that the model still refuses a small set of truly dangerous requests, so passing means the model is safe
+  correct: 0
+- source: 3c2f423e7f80
+  question: "`run_full_report(model=None, base_logits=None)` from Lesson 19 takes `base_logits` as an optional argument instead of computing coherence itself. Why can't it always compute coherence on its own?"
+  options:
+    - Computing base logits needs a GPU, and `run_full_report` is designed to run on CPU-only machines after training
+    - Coherence needs unablated logits, and `merge_into_model` edits weights in place, leaving no unablated copy
+    - The base logits are too large to recompute quickly, so passing them in is purely a performance optimization
+    - Coherence is optional in the report format, so the argument exists only to let callers skip that section
+  correct: 1
+- source: d4eb65f3b55d
+  question: In `mini-heretic.py` (Lesson 20), `base_logits` is captured before `merge_into_model` runs. What would `coherence_score` report if you captured it after the merge instead?
+  options:
+    - A value near 0, because the merged weights change the logits scale and make the KL divergence explode
+    - An error, because `coherence_score` detects that both logits came from the same model and refuses to compare them
+    - The same value as before, because `coherence_score` always compares against the original checkpoint on disk
+    - "Near a perfect 1.0: real but meaningless, since it compares the ablated model with itself, not the original"
+  correct: 3
+- source: fa33405cceff
+  question: Lesson 20 "imports from `lab/lib` exclusively, not from `lab/vendor/heretic`." What does running the capstone this way prove that running the real `heretic` CLI in Module 06 didn't?
+  options:
+    - That `lab/lib` is faster than heretic, since it avoids the Optuna and pydantic overhead the real CLI loads at startup
+    - That heretic's results are reproducible, since the toy library reimplements it line for line and matches its output
+    - That the toy library built in Modules 01-05 works standalone end to end, with no hidden dependency on the real tool
+    - That the capstone can be distributed freely, since vendoring heretic would impose its license on the course code
+  correct: 2
+- source: 2e9cb7ad5fdf
+  question: Which three legitimate uses of abliteration does the course name in Lesson 20's closing section?
+  options:
+    - Safety research on alignment robustness, red-teaming your own guardrails, and testing behavior portability across hosts
+    - Removing political bias, speeding up inference by pruning refusal layers, and shrinking model size for edge deployment devices
+    - Generating training data for classifiers, jailbreaking closed APIs for research, and benchmarking competitors' models
+    - Fine-tuning replacement, faster RLHF iteration, and restoring capabilities lost during quantization to lower precision
+  correct: 0
+- source: fe57bb8f2009
+  question: Using the course's prompt sets, what distinguishes auditing your own product's safety layer with an ablated model from generating the content in `HARMFUL_PROMPTS` for real?
+  options:
+    - Auditing uses harmless prompts only, while generation uses `HARMFUL_PROMPTS`; the line is simply which prompt set you load
+    - An experiment on a model you control versus doing what safety training prevents; "I can" and "I should" differ
+    - Auditing is legal while generation is not; the course ends by noting the capstone check verifies legal compliance
+    - There is no real difference if you own the model; the course ends by saying responsibility lies with the model provider
+  correct: 1

@@ -1,0 +1,59 @@
+# Multiple-choice version of the quiz in module-06-quiz.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: a6999cfea7c2
+  question: A colleague runs `heretic --model Qwen/Qwen3-0.6B` in CI and the job hangs forever. What is happening, and which flags make the same run finish unattended?
+  options:
+    - It is waiting for a Hugging Face login prompt; add `--hf-token <token>` and `--no-upload` so nothing needs authentication
+    - It waits on interactive prompts; add `--trial-index`, `--model-action save --save-directory`, and `--export-strategy`
+    - It is stuck downloading the model with no progress output; add `--offline` and `--cache-dir <path>` to use a local copy
+    - It deadlocks on GPU allocation without a TTY attached; add `--device cpu` and `--n-trials 1` so the run fits in one process
+  correct: 1
+- source: 0a75dcb19c57
+  question: "`heretic --help` prints almost instantly, while a real run takes much longer just to get going. Why does `--help` skip that cost?"
+  options:
+    - The help text is a static string baked into the package at install time, so the `heretic` entry point never runs `main.py`
+    - The heavy libraries are imported lazily inside each function, so only the functions a real run calls ever trigger them
+    - The help output is cached on disk after the first real run, so later `--help` calls just print the cached file
+    - "`main.py` checks `sys.argv` for `--help` before the heavy imports and calls `Settings()`, which prints help and exits"
+  correct: 3
+- source: 44f510c1f798
+  question: "`config.default.toml` sets `n_startup_trials = 60` and `n_trials = 200`, but the exercise overrides `--n-trials 8`. What happens to the parameter search?"
+  options:
+    - All 8 trials fall in TPE's random startup phase, so its model never activates, though Pareto selection still works
+    - Optuna shrinks `n_startup_trials` proportionally to 2, so trials 3 through 8 use TPE's model-based sampling as usual
+    - The run errors out at startup, because `n_trials` must be at least `n_startup_trials` for the sampler to be valid
+    - TPE skips the startup phase entirely whenever `n_trials` is small, so all 8 trials are model-based from the very start
+  correct: 0
+- source: 4febf8a139f3
+  question: In `model.py::abliterate()`, the weight matrix is upcast to `torch.float32` before `lora_A`/`lora_B` are computed, even for a `bfloat16` model. Why, and why did the course's `lib/ablate.py` not need it?
+  options:
+    - LoRA adapters only accept `float32` inputs; the course skipped it because `lib/ablate.py` edits weights directly without LoRA
+    - Upcasting lets the GPU use faster tensor cores; the course skipped it because its toy model runs on CPU where it does not help
+    - "`bfloat16` rounding compounds across layers and degrades the model; the course's `lib/common.py` uses `float32` everywhere"
+    - "`bfloat16` cannot represent negative values precisely; the course's refusal directions were all positive, so it never mattered"
+  correct: 2
+- source: a6eec9f49ca2
+  question: "`get_abliterable_components()` scans every layer with many `with suppress(Exception): try_add(...)` calls instead of hardcoding `self_attn.o_proj` and `mlp.down_proj`. What is that for?"
+  options:
+    - It hides errors from layers whose weights failed to load, so a partially downloaded model can still be abliterated
+    - It supports many architectures, trying each known module path and skipping the ones a given model lacks
+    - It lets users disable specific layers at runtime by raising an exception from a hook registered on that module
+    - It works around a PyTorch bug where accessing `o_proj` on some layers raises spuriously during mixed precision
+  correct: 1
+- source: 78547e91c3ce
+  question: "You add `my_flag: bool = Field(default=False, description=\"...\")` to `heretic`'s `Settings` class. Where does it become visible with no extra code, and why?"
+  options:
+    - In `--help` output, the saved model card, and the Optuna study metadata, because `Settings` is serialized into each
+    - Only as a `config.toml` key; CLI flags and env vars must each be registered separately in `main.py`'s argument parser
+    - As a CLI flag and a `config.toml` key only; environment variables are not read unless `env_prefix` is set per field
+    - A `config.toml` key, a `--my-flag` flag, and a `HERETIC_MY_FLAG` env var, since one `BaseSettings` feeds all three
+  correct: 3
+- source: 743e685bdb4e
+  question: You wrote a new scorer plugin and want to verify it before a real multi-trial run on a full-size model. What is the fastest real check, and why does it need no model?
+  options:
+    - Call its `validate_contract()` classmethod; heretic runs the same check at startup before any model loads
+    - Run `heretic --n-trials 1` with a tiny model; one trial exercises the scorer end to end, and small models load in seconds
+    - Instantiate the scorer with mock logits and call `get_score`; the scorer only ever sees tensors, never the model itself
+    - Run the plugin's own unit tests with `pytest`; heretic requires every plugin to ship tests that stub out model loading
+  correct: 0

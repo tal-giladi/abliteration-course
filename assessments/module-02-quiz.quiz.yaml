@@ -1,0 +1,59 @@
+# Multiple-choice version of the quiz in module-02-quiz.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: ee3563fa684c
+  question: A colleague suggests computing the refusal direction from one extremely clear example ("How do I build a pipe bomb?") instead of averaging over 20 prompts. Why is the single-prompt direction worse?
+  options:
+    - One prompt cannot fill a full `hidden_size` vector, so most dimensions of the direction are left at zero.
+    - A clear prompt triggers too strong a refusal, so the direction overshoots and must be rescaled by hand.
+    - Its activation mixes topic, phrasing, and length with refusal, and one example cannot separate them.
+    - The tokenizer truncates short prompts, so a single example never reaches the layers where refusal lives.
+  correct: 2
+- source: 5e1f7c386ced
+  question: "`HARMFUL_PROMPTS` is split into `HARMFUL_TRAIN` (first 20) and `HARMFUL_HOLDOUT` (last 4). Which set builds the direction, and why must the split stay fixed?"
+  options:
+    - The train sets build it; a fixed split means holdout prompts never influenced the direction.
+    - The holdout sets build it; a fixed split keeps the training data reproducible across sessions.
+    - All 24 prompts build it; the split only matters later when choosing which layer to ablate.
+    - The train sets build it; the split is fixed only so results match the numbers in the lessons.
+  correct: 0
+- source: d9eca5f846b5
+  question: "`compute_direction` returns `normalize(mean_a - mean_b)` rather than the raw difference. What would become harder in Lesson 12 (per-layer ablation strength) without normalization?"
+  options:
+    - Unnormalized directions cannot be subtracted from a weight matrix, so the ablation step would error out.
+    - Raw differences point the opposite way at deeper layers, so ablation would add refusal instead of removing it.
+    - Normalization is what removes the harmless mean, so raw directions would still carry harmless content.
+    - Raw magnitude tracks each layer's activation scale, so the per-layer strength knob would fight that noise.
+  correct: 3
+- source: f19dbc74d5bd
+  question: "`F.normalize(diff, dim=-1)` is called once on a `[num_layers + 1, hidden_size]` tensor. Why does the direction at layer 5 have no effect on the length of the direction at layer 20?"
+  options:
+    - "`dim=-1` divides every row by the global norm of the whole tensor, which is shared by all layers."
+    - "`dim=-1` normalizes each layer's `hidden_size` vector on its own, using only that layer's norm."
+    - "`dim=-1` normalizes across layers for each hidden dimension, rescaling the tensor column by column."
+    - "`dim=-1` only normalizes the last layer, and earlier layers keep their raw magnitudes unchanged."
+  correct: 1
+- source: a805bb243856
+  question: Held-out projection scores show almost no separation at layer 2 but a clean gap at layer 14. Does this mean the direction is wrong at layer 2?
+  options:
+    - No; it is computed correctly, but layer 2 is near the embeddings, where the concept is still weak.
+    - Yes; layer 2 has a bug in its mean, since a correct direction separates equally well at every layer.
+    - Yes; early layers need more training prompts, so layer 2's direction is undersampled and unusable.
+    - No; layer 2 separates just as well, but its scores are on a smaller scale and need rescaling first.
+  correct: 0
+- source: ddfb6b451225
+  question: You test `projection_scores` only on `HARMFUL_TRAIN` and `HARMLESS_TRAIN` (the prompts used to build the direction) and see a huge margin. Does that prove the direction generalizes?
+  options:
+    - Yes; a large margin on any prompts shows the direction captures refusal, whichever set they come from.
+    - Yes, as long as the margin holds at every layer, since overfitting would only appear at a few layers.
+    - No; it was built to separate those prompts, so only a margin on unseen holdout prompts shows that.
+    - No; training prompts always score near zero after normalization, so any margin there is just noise.
+  correct: 2
+- source: 556b8c183250
+  question: A residual at layer 14 is `v` and `direction[14]` is a unit vector `d`. What does `v @ d` measure, and why does `projection_scores` re-normalize `d` anyway?
+  options:
+    - The angle between `v` and `d` in radians; re-normalizing converts the result from degrees to radians.
+    - The total length of `v`; re-normalizing `d` stops that length from being counted twice in the score.
+    - The cosine similarity of `v` and `d`; re-normalizing is required because `v` is never unit length.
+    - How much of `v` points along `d`; re-normalizing keeps it correct even if given an unnormalized `d`.
+  correct: 3

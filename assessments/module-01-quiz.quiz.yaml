@@ -1,0 +1,51 @@
+# Multiple-choice version of the quiz in module-01-quiz.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 17959d516c95
+  question: A colleague says "layer 5 transforms the output of layer 4 into something new." Which statement best corrects them, in terms of the residual connection?
+  options:
+    - Layer 5 overwrites the stream with its own output, and the residual connection only stores a copy for backprop.
+    - Layer 5 adds its contribution to layer 4's output, so the stream accumulates rather than being replaced.
+    - Layer 5 averages its output with layer 4's output, so each layer contributes exactly half of the new stream.
+    - Layer 5 multiplies layer 4's output by a learned gate, so the residual connection scales the stream each layer.
+  correct: 1
+- source: 9d6aeb5a51b2
+  question: "`output_hidden_states=True` on a model with 28 decoder layers returns a tuple of how many tensors, and what do entries `0` and `28` represent?"
+  options:
+    - 28 tensors; entry `0` is the output of the first decoder layer and entry `28` does not exist.
+    - 28 tensors; entry `0` is the embedding output and entry `28` wraps around to the final logits.
+    - 30 tensors; entry `0` is the tokenized input ids and entry `28` is the stream before the final norm.
+    - 29 tensors; entry `0` is the embedding output and entry `28` is the stream after all 28 layers.
+  correct: 3
+- source: 90bac0663663
+  question: Why does the course slice the residual stream at the last token position (`[:, -1, :]`) rather than the first token or an average over all tokens?
+  options:
+    - The next token is predicted only from the last position's final-layer state, so that state is what matters.
+    - The last position has the largest activation norm, so its signal dominates any average over the other tokens.
+    - The first token is always a special token whose stream is frozen, so the last one is the only other safe choice.
+    - Averaging over tokens is mathematically identical to taking the last token, so `[:, -1, :]` is just cheaper.
+  correct: 0
+- source: 595fa16dbbc9
+  question: "`encode_chat` left-pads its input. What would go wrong with `[:, -1, :]` if it right-padded instead, for a batch with one short and one long prompt?"
+  options:
+    - The long prompt would be truncated to the short prompt's length, dropping its final tokens before the slice.
+    - PyTorch would raise a shape mismatch error, because right-padded rows cannot be sliced with a negative index.
+    - For the short prompt, index `-1` would grab a pad token's stream instead of its last real token, silently.
+    - The attention mask would flip, so the long prompt would attend only to pad tokens and return all zeros.
+  correct: 2
+- source: 957ab0ca3253
+  question: Vectors `a` and `b` point in exactly the same direction, but `b` is five times longer than `a`. What is `cosine_similarity(a, b)`, and how does `a @ b` compare to `a @ a`?
+  options:
+    - Cosine similarity is 0.2, and `a @ b` equals `a @ a` because the direction did not change.
+    - Cosine similarity is 5.0, and `a @ b` is larger than `a @ a` because both scale with length.
+    - Cosine similarity is 1.0, and `a @ b` equals `a @ a` because the dot product ignores length.
+    - Cosine similarity is 1.0, and `a @ b` exceeds `a @ a` as length scales the dot product.
+  correct: 3
+- source: 4f710b205b4a
+  question: Why does the course compute a mean difference over many prompts (`mean_difference`) instead of using the activation from a single, very clear example prompt?
+  options:
+    - A single prompt produces a vector of the wrong shape, and averaging is how batch dimensions get collapsed.
+    - Averaging cancels noise specific to each prompt and leaves roughly only what the whole group shares.
+    - A single clear prompt already contains the concept, but averaging is needed to make the vector unit length.
+    - Averaging over many prompts amplifies the rare prompts, so outliers carry the strongest refusal signal.
+  correct: 1

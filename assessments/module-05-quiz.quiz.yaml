@@ -1,0 +1,59 @@
+# Multiple-choice version of the quiz in module-05-quiz.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 2c29d66fc2a0
+  question: 'A teammate proposes: "just run the search, and pick whichever trial has the lowest `refusal_rate`." What is wrong with that selection rule?'
+  options:
+    - Nothing is wrong with it; a low `refusal_rate` already implies the model stayed coherent, since a damaged model tends to refuse more often
+    - It overfits to the harmful prompt set, so you should instead pick the trial with the median `refusal_rate` across all trials
+    - It rewards a model broken into incoherence that cannot form a refusal; check that `coherence_score` stays near 1.0 on the same trial
+    - It ignores run time, so you should pick the fastest trial whose `refusal_rate` falls below a fixed threshold like 10%
+  correct: 2
+- source: 1200f560bb50
+  question: You ablate every layer at strength 1.0 (the maximum) and `refusal_rate` on the held-out harmful set drops to 0%. Is this a successful abliteration?
+  options:
+    - Not necessarily; check `coherence_score` vs. the original model, where a value far below 1.0 means general damage
+    - Yes; a 0% refusal rate on a held-out set is the definition of success, and no other number can change that conclusion
+    - Not necessarily; rerun `refusal_rate` on the training harmful set, and a higher rate there would mean the direction was not general
+    - Yes, as long as `refusal_rate` on harmless prompts is also 0%, which confirms the edit touched only the refusal behavior
+  correct: 0
+- source: b4a4756c9e5c
+  question: "`coherence_score(logits_a, logits_b)` returns `1.0` when called with the same tensor for both arguments. Why, in terms of what the function computes?"
+  options:
+    - The function checks whether the two tensors are identical and returns 1.0 as a special case before doing any math
+    - It computes cosine similarity of the logits, and any vector has cosine similarity 1.0 with itself
+    - It computes the fraction of positions where the argmax tokens agree, and identical logits agree at every position
+    - It computes `exp(-KL(base || edited))`; KL of a distribution with itself is exactly 0, and `exp(-0) = 1.0`
+  correct: 3
+- source: 32f4043918de
+  question: Two engineers both implement `random_search` correctly per the course spec, with the same `seed` and `param_space`, but their `best_score` results differ. Is one of them wrong?
+  options:
+    - Yes; the same seed must produce identical draws, so the one that differs from the Lesson 14 reference run has a bug
+    - No; the spec does not fix RNG call order, so both can be correct, which is why the Lesson 14 checker grades behavior
+    - Yes; one of them is probably reseeding inside the loop, which the spec forbids and the checker detects by comparing numbers
+    - No; random search is nondeterministic even with a seed, so the checker reruns each submission several times and averages
+  correct: 1
+- source: 05948d482b6b
+  question: In Heretic's `main.py`, `TPESampler` is constructed with `n_startup_trials=...`. What would go wrong early in a search run if `n_startup_trials` were set to `0`?
+  options:
+    - Optuna would raise a validation error at construction, because TPE requires at least one startup trial to be configured
+    - The search would never leave random sampling, since the model-based phase only starts after startup trials are exhausted
+    - TPE would model good versus bad regions with no trial history, making data-free guesses from the first trial
+    - The sampler would reuse the previous study's trials as its history, leaking results from an unrelated earlier run
+  correct: 2
+- source: 7ab6188f3b32
+  question: A colleague says "TPE is a fundamentally different algorithm from random search - they don't have much in common." Which correction is accurate?
+  options:
+    - Both are the same propose-evaluate-track loop; only the proposal step differs, with TPE biasing toward good regions
+    - Both fit a surrogate model of the objective; random search just uses a flat prior while TPE uses a learned Gaussian process
+    - They share nothing structurally, but they converge to the same optimum given enough trials, so the difference does not matter
+    - Both use gradient estimates of the objective; TPE simply takes larger steps along them than random search does
+  correct: 0
+- source: 6cf878e76481
+  question: Heretic's `KLDivergence` scorer uses `optimization = "minimize"`, while the course's `coherence_score` treats a higher number as better. Are they measuring different things?
+  options:
+    - Yes; Heretic measures KL on harmful prompts while the course measures agreement on harmless prompts, so they are unrelated
+    - Yes; Heretic's scorer measures refusal strength, which should be minimized, while coherence measures fluency
+    - No; they are the same, but Heretic's config is a bug, since KL divergence should be maximized to preserve behavior
+    - No; both are KL between edited and original outputs, and the course wraps it in `exp(-KL)` so higher is better
+  correct: 3

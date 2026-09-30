@@ -1,0 +1,59 @@
+# Multiple-choice version of the quiz in module-04-quiz.md (question N = question N there).
+# The lesson's model answer is shown as the explanation. `source` fingerprints the original
+# question + answer; if the lesson changes, the site flags the question for review.
+- source: 21998988ccc3
+  question: A forward hook on `model.model.layers[i]` changes generation without editing any file on disk. What does the hook intercept, and when does its effect end?
+  options:
+    - It replaces the layer's output before later layers see it, and stops once the hook is removed.
+    - It rewrites the layer's weights in memory on first call, and stops only when the model reloads.
+    - It edits the input tokens before embedding, and stops once the current generate call returns.
+    - It caches a modified copy of the layer's weights on disk, and stops when that cache is cleared.
+  correct: 0
+- source: e0196991f4d8
+  question: "`ablation_forward_hook` is registered on `model.model.layers[i]` using `directions[i + 1]`, not `directions[i]`. What does `directions[i]` correspond to instead?"
+  options:
+    - The stream after layer `i + 1`, so `directions[i]` would apply the direction one layer too late.
+    - The attention output inside layer `i`, since each layer contributes two entries to `directions`.
+    - The stream before layer `i` ran, since index 0 is the embedding output, so it is one layer early.
+    - The same checkpoint; the `+ 1` only skips a padding row that `compute_direction` appends at the end.
+  correct: 2
+- source: 969253b33d88
+  question: Why must `live_ablation` remove its hooks in a `finally` block (or `__exit__`) rather than just "at the end of the function"?
+  options:
+    - Hooks removed outside `finally` are garbage-collected too late, which leaks GPU memory between calls.
+    - If the block raises, the last line never runs and hooks stay on, silently changing later calls.
+    - PyTorch only allows hook handles to be removed from inside an exception handler or a context manager.
+    - Without `finally`, hooks are removed before the last forward pass, so the final token is not ablated.
+  correct: 1
+- source: dcc133fc5069
+  question: A colleague says "a live hook and `merge_into_model` are two different abliteration techniques - one edits the model, one doesn't." What is actually the same, and what differs?
+  options:
+    - The hook projects the stream while the merge retrains weights; they share only the direction vector.
+    - Both edit weights, but the hook does it lazily on first use while the merge does it eagerly at load.
+    - The hook removes the direction from inputs while the merge removes it from outputs, at equal cost.
+    - Same projection at the same places; the hook redoes it every pass, the merge bakes it into weights.
+  correct: 3
+- source: 9e7496964ad8
+  question: Lesson 11's checker saves with `save_pretrained`, reloads with `from_pretrained`, and generates, rather than only comparing in-memory tensors. What does the reload prove that the tensor comparison cannot?
+  options:
+    - That the ablation is numerically exact, since in-memory tensors hide small floating point errors.
+    - That the tokenizer was saved alongside the weights, which the in-memory comparison never covers.
+    - That the edit is a property of the saved file, not just of objects living in the interpreter.
+    - That the model still fits in GPU memory, since a merged model is larger than the original one.
+  correct: 2
+- source: 04d2951f944d
+  question: A colleague sets `max_weight=1.0` and `min_weight_distance=10.0` in `strength_curve`, reasoning "stronger ablation on every layer can only help." What happens to the curve, and why is that not obviously good?
+  options:
+    - It collapses to zero everywhere, because distances over 1.0 clamp straight to the floor weight.
+    - It peaks only at `max_weight_position` with zero elsewhere, so refusal is barely removed at all.
+    - It oscillates between floor and max, because `t` wraps around once distances go past 1.0.
+    - It stays near full strength everywhere, which strips non-refusal content and costs coherence.
+  correct: 3
+- source: 9f6e312e2f6d
+  question: In `merge_into_model`, a checkpoint with `weight == 0` is skipped with `continue` instead of calling `ablate_matrix_output(W, d, weight=0.0)`. Both leave the tensor the same, so why does it matter?
+  options:
+    - Calling with `weight=0.0` divides by zero during normalization and would corrupt the weight tensor.
+    - Skipping avoids pointless normalize, outer product, and copy work, and states the intent directly.
+    - Skipping is required because `ablate_matrix_output` rejects zero weights with a validation error.
+    - Calling with `weight=0.0` detaches the parameter from autograd, breaking later fine-tuning of it.
+  correct: 1
