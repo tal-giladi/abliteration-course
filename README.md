@@ -1,3 +1,5 @@
+> ⚠️ **Publishing warning:** sensitive topic - review before importing to the online academy. See [PUBLISHING_WARNING.md](PUBLISHING_WARNING.md).
+
 # Abliteration: erasing a behavior from an LLM's weights
 
 **7 modules · 20 lessons · 20 graded exercises · 7 quizzes · 1 capstone**
