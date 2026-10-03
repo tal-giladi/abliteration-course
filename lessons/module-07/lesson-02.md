@@ -190,6 +190,24 @@ your own product's safety layer holds up against this technique is the first cas
 technique to get the answers that layer was built to withhold, for real-world use, is the
 second. Same script, same three numbers in the report, a completely different act.
 
+This isn't an abstract worry, and it isn't small. In September 2026 Anthropic documented
+what happens when the technique you just built by hand is pointed at a real frontier
+open-weight model rather than a 0.6B toy: *"GLM-5.3 and the spread of advanced cyber
+capabilities"* ([anthropic.com](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities)).
+The numbers are worth sitting with, because every one of them is a quantity you now know how
+to produce. A team with no prior abliteration experience stripped the model's refusal
+training for roughly \$4,400 in compute (they estimate an experienced team could do it for
+~\$1,200); community-abliterated versions appeared within days of release; refusal on harmful
+requests fell from ~95% to the low single digits; and the model's general capability — and
+its demonstrated ability to develop working exploits — survived nearly intact. That last
+clause is the whole point of the report, and the exact thing Lesson 19's third number exists
+to detect: the ablation worked *and* the model stayed capable. The same report notes you
+often don't even need to touch the weights — prompt-level tricks like prefilled reasoning
+reached ~92% engagement on their tests — which is the weights-vs-prompt distinction this
+course flagged as out of scope, showing up as a real-world shortcut. This is not a
+hypothetical about what the technique *could* enable. It's a measured account of it already
+happening, with the same four steps your `mini-heretic.py` just ran.
+
 This course isn't going to draw that line for you in every specific case — it can't, and
 pretending otherwise would be its own kind of dishonesty. What it can do, and has tried to do
 throughout, is make sure you're never in a position to cross it without knowing you did. "Can

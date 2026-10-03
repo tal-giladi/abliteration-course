@@ -84,6 +84,8 @@ cached for the rest of the course).
 **Module 07 - Capstone and responsible use**
 19. Evaluating a decensored model properly - refusal rate, coherence, and a capability spot-check together
 20. Capstone: `mini-heretic.py` end to end, and where this technique stops being research
+21. *(extension)* Reproducing a published evaluation - two refusal scorers that disagree on one model, after Anthropic's GLM-5.3 report
+22. *(extension)* The full recipe, measured like the paper - before/after on the weak model, and why the recipe is not generalized to a capable one
 
 ## Assessment
 

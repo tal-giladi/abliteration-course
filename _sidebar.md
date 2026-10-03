@@ -43,5 +43,7 @@
   - [Module plan](curriculum/module-07-plan.md)
   - [19 · Evaluating a decensored model properly](lessons/module-07/lesson-01.md)
   - [20 · Capstone: mini-heretic.py](lessons/module-07/lesson-02.md)
+  - [21 · Extension: reproducing a published evaluation](lessons/module-07/lesson-03.md)
+  - [22 · Extension: the full recipe, measured like the paper](lessons/module-07/lesson-04.md)
   - [Module 7 quiz](assessments/module-07-quiz.md)
 - [Glossary](assets/glossary.md)

@@ -49,6 +49,21 @@ happened during ablation broke more than refusal, no matter what the refusal rat
 model that fails this spot-check has not been successfully decensored — it's been damaged,
 and a low refusal rate on a damaged model isn't a result worth keeping.
 
+> **From the field — how the professionals do the same check.** In September 2026 Anthropic
+> published an analysis of an abliterated open-weight model, *"GLM-5.3 and the spread of
+> advanced cyber capabilities"* ([anthropic.com](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities)).
+> They reported exactly the pair this lesson insists on, at scale: refusal measured on three
+> standard benchmarks (JailbreakBench, HarmBench, StrongREJECT) *and* a capability check run
+> before and after, to show the abliteration had removed refusal without degrading the model.
+> Two details are worth carrying into your own work. First, refusal fell to roughly 2–3% on
+> two benchmarks but stayed around 12% on StrongREJECT — three "refusal rates" disagreed by
+> 6×, because each benchmark defines a refusal differently. A single refusal number means
+> little without knowing which prompts and which scorer produced it; your five-question
+> spot-check is a cruder instance of the same caution. Second, their capability scores barely
+> moved — which is the finding that makes the result *notable* rather than reassuring. "Refusal
+> gone, capability intact" is the whole concern, not a success criterion. Keep that framing
+> when you read your own three numbers below.
+
 **Example.** Run the spot-check against the unmodified model and it should score at or near
 5/5 — Qwen3-0.6B has no trouble with these on a good day. Run it against a model you
 deliberately over-ablated (if you still have Lesson 12's high-strength experiment sitting
